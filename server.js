@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3000", // <-- location of the react app were connecting to
+    origin: "http://localhost:3500", // <-- location of the react app. Set accessable origin from
     credentials: true,
   })
 );
@@ -43,8 +43,7 @@ app.use(passport.session());
 //passport configuration
 passport.use(
     new localStrategy((username, password, done) => {
-        User.findOne({ username: username }).then((err, user) => {
-            if (err) throw err;
+        User.findOne({ 'username': username }).then((user) => {
             if (!user) return done(null, false);
             bcrypt.compare(password, user.password, (err, result) => {
             if (err) throw err;
@@ -64,11 +63,11 @@ passport.serializeUser((user, cb) => {
 });
 passport.deserializeUser((id, cb) => {
     User.findOne({ _id: id })
-    .then((err, user) => {
+    .then((user) => {
         const userInformation = {
-            username: username.username,
+            username: user.username,
         };
-        cb(err, userInformation);
+        cb(null, userInformation);
     }).catch((err)=>{
         console.log(err);
     });

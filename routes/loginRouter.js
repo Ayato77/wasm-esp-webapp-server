@@ -12,8 +12,11 @@ app.get("/login", function (req, res) {
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
-    if (!user) res.send("No User Exists");
+    if (!user) {
+      res.send("Wrong Username or/and Password");
+    }
     else {
+      //TODO: We get no response!! Resolve this problem. It didnt reach to res.send("Success....") 
       req.logIn(user, (err) => {
         if (err) throw err;
         res.send("Successfully Authenticated");
@@ -26,11 +29,9 @@ app.post("/login", (req, res, next) => {
 //registration
 //TODO: consider how to provide secured registration
 app.post("/register", (req, res) => {
-  //TODO: Check duplication of user!!
   User.findOne({"username":req.body.username})
   .then((result)=>{
     if(result!=null){
-      console.log(res)
       console.log('This user already exists in Database');
       res.redirect('/');
     }
